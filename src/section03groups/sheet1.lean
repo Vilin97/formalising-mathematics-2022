@@ -64,12 +64,14 @@ See if you can prove all seven using (for the most part) the `rw` tactic.
 
 @[simp] lemma inv_mul_cancel_left : a⁻¹ * (a * b) = b :=
 begin
-  sorry
+  rw ← mul_assoc,
+  simp,
 end
 
 @[simp] lemma mul_inv_cancel_left : a * (a⁻¹ * b) = b :=
 begin
-  sorry
+  rw ← mul_assoc,
+  simp,
 end
 
 lemma left_inv_eq_right_inv {a b c : G} (h1 : b * a = 1) (h2 : a * c = 1) : 
@@ -77,27 +79,51 @@ lemma left_inv_eq_right_inv {a b c : G} (h1 : b * a = 1) (h2 : a * c = 1) :
 begin
   -- hint for this one : establish the auxiliary fact
   -- that `b * (a * c) = (b * a) * c` with the `have` tactic.
-  sorry,
+  have h : b*(a * c) = (b * a) * c,
+  simp,
+  rw h1 at h,
+  rw h2 at h,
+  simp at h,
+  exact h,
+end
+
+-- practice lemma
+lemma one_mult_one : 1*1=1 :=
+begin
+  simp,
 end
 
 lemma mul_eq_one_iff_eq_inv : a * b = 1 ↔ a⁻¹ = b :=
 begin
-  sorry,
+  split,
+    intro h,
+    have h2 : a⁻¹*(a*a⁻¹) = a⁻¹*(a*b),
+    rw mul_inv_self,
+    rw h,
+    simp at h2,
+    exact h2,
+
+    intro h,
+    rw ← h,
+    simp,
 end
 
 @[simp] lemma one_inv : (1 : G)⁻¹ = 1 :=
 begin
-  sorry,
+  rw ← mul_eq_one_iff_eq_inv,
+  simp,
 end
 
 @[simp] lemma inv_inv : (a⁻¹)⁻¹ = a :=
 begin
-  sorry,
+  rw ← mul_eq_one_iff_eq_inv,
+  simp,
 end
 
 @[simp] lemma mul_inv_rev : (a * b)⁻¹ = b⁻¹ * a⁻¹ := 
 begin
-  sorry,
+  rw ← mul_eq_one_iff_eq_inv,
+  simp,
 end
 
 /-
@@ -115,10 +141,24 @@ example (G : Type) [mygroup G] (a b : G) :
   (b⁻¹ * a⁻¹)⁻¹ * 1⁻¹⁻¹ * b⁻¹ * (a⁻¹ * a⁻¹⁻¹⁻¹) * a = 1 := by simp
 
 -- bonus puzzle : if g^2=1 for all g in G, then G is abelian
-example (G : Type) [mygroup G] (h : ∀ g : G, g * g = 1) :
+example (G : Type) [mygroup G] (hyp : ∀ g : G, g * g = 1) :
   ∀ g h : G, g * h = h * g :=
 begin
-  sorry
+  intros g h,
+  have hyp2 : g⁻¹*h⁻¹ = (g*h)⁻¹,
+  symmetry,
+  rw ← mul_eq_one_iff_eq_inv,
+  let hypg := hyp g,
+  rw mul_eq_one_iff_eq_inv at hypg,
+  let hyph := hyp h,
+  rw mul_eq_one_iff_eq_inv at hyph,
+  rw hypg,
+  rw hyph,
+  exact hyp (g*h),
+  have hyp3 : (g⁻¹*h⁻¹)⁻¹ = (g*h)⁻¹⁻¹,
+  rw hyp2,
+  simp at hyp3,
+  rw hyp3,
 end
 
 end mygroup
