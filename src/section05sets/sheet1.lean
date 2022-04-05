@@ -79,12 +79,18 @@ Let's prove some theorems.
 
 example : A ⊆ A :=
 begin
-  sorry,
+  intros x h,
+  exact h,
 end
 
 example : A ⊆ B → B ⊆ C → A ⊆ C :=
 begin
-  sorry,
+  intros h h' x hx,
+  have hB : x ∈ B,
+    rw subset_def at h,
+    exact h x hx,
+  rw subset_def at h',
+  exact h' x hB,
 end
 
 example : A ⊆ A ∪ B :=
@@ -114,5 +120,10 @@ end
 
 example : A ⊆ B → C ⊆ D → A ∩ C ⊆ B ∩ D :=
 begin
-  sorry,
+  intros hAB hCD x h,
+  split,
+  cases h with h1 h2,
+  exact hAB h1,
+  cases h with h1 h2,
+  exact hCD h2,
 end

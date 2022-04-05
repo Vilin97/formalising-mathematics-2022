@@ -36,51 +36,94 @@ variables
 
 example : A ∪ A = A :=
 begin
-  sorry
+  ext,
+  split,
+  intro h,
+  cases h with h1 h2,
+  exact h1,
+  exact h2,
+
+  intro h,
+  left,
+  exact h,
 end
 
 example : A ∩ A = A :=
 begin
-  sorry
+  ext,
+  split,
+  intro h,
+  cases h with h1 h2,
+  exact h1,
+
+  intro h,
+  split,
+  exact h,
+  exact h,
 end
 
 example : A ∩ ∅ = ∅ :=
 begin
-  sorry
+  ext,
+  split,
+  intro h,
+  cases h with h1 h2,
+  exact h2,
+
+  intro h,
+  exfalso,
+  exact h,
 end
 
 example : A ∪ univ = univ :=
 begin
-  sorry
+  ext,
+  split,
+  intro h,
+  cases h with h1 h2,
+  simp,
+  exact h2,
+
+  intro h,
+  right,
+  exact h,
 end
 
 example : A ⊆ B → B ⊆ A → A = B :=
 begin
-  sorry
+  intros h1 h2,
+  ext,
+  split,
+  intro h,
+  exact h1 h,
+  intro h,
+  exact h2 h,
 end
 
 example : A ∩ B = B ∩ A :=
 begin
-  sorry
+  exact inf_comm,
 end
 
 example : A ∩ (B ∩ C) = (A ∩ B) ∩ C :=
 begin
-  sorry
+  symmetry,
+  exact inf_assoc,
 end
 
 example : A ∪ (B ∪ C) = (A ∪ B) ∪ C :=
 begin
-  sorry
+  symmetry,
+  exact sup_assoc,
 end
 
 example : A ∪ (B ∩ C) = (A ∪ B) ∩ (A ∪ C) :=
 begin
-  sorry,
+  exact union_distrib_left A B C,
 end
 
 example : A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C) :=
 begin
-  sorry,
+  exact inter_distrib_left A B C,
 end
 

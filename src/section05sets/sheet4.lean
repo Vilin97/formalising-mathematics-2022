@@ -53,7 +53,8 @@ def is_even (n : ℕ) : Prop := ∃ t, n = 2 * t
 
 example : 74 ∈ {n : ℕ | is_even n} :=
 begin
-  sorry,
+  use 37,
+  ring,
 end
 
 -- Let's develop a theory of even real numbers
@@ -62,12 +63,16 @@ def real.is_even (r : ℝ) := ∃ t : ℝ, r = 2 * t
 -- Turns out it's not interesting
 example : ∀ x , x ∈ {r : ℝ | real.is_even r} :=
 begin
-  sorry,
+  intro x,
+  use x/2,
+  ring,
 end
 
 -- likewise, the theory of positive negative real numbers is not interesting
 example : ∀ x, x ∉ {r : ℝ | 0 < r ∧ r < 0} :=
 begin
-  sorry,
+  intros x h,
+  rw mem_def _ at h,
+  linarith [h],
 end
 

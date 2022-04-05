@@ -41,18 +41,45 @@ variables (X Y : Type) (f : X → Y) (S : set X) (T : set Y)
 
 example : S ⊆ f ⁻¹' (f '' S) :=
 begin
-  sorry
+  intros x h,
+  use x,
+  split,
+  exact h,
+  refl,
 end
 
 example : f '' (f ⁻¹' T) ⊆ T :=
 begin
-  sorry
+  intros y h,
+  unfold set.image at h,
+  cases h with x hx,
+  cases hx with h1 h2,
+  unfold set.preimage at h1,
+  rw ← h2,
+  exact h1,
 end
 
-example : f '' S ⊆ T ↔ S ⊆ f ⁻¹' T :=
+lemma gal_connection : f '' S ⊆ T ↔ S ⊆ f ⁻¹' T :=
 begin
-  sorry
+  split,
+  intros h x hs,
+  unfold set.preimage,
+  unfold set.image at h,
+  apply h,
+  use x,
+  split,
+  exact hs,
+  refl,
+
+  intros h y hy,
+  cases hy with x hx,
+  cases hx with h1 h2,
+  rw ← h2,
+  apply h,
+  exact h1,
 end
+
+#check gal_connection X Y f S T
 
 -- image and preimage form a Galois connection
 -- look up Galois connections in the mathlib docs to learn about what these are
@@ -61,5 +88,7 @@ end
 -- NB `≤` on subsets is defined to be `⊆` 
 example : galois_connection (λ S, f '' S) (λ T, f ⁻¹' T) :=
 begin
-  sorry
+  unfold galois_connection,
+  intros S T,
+  exact gal_connection X Y f S T,
 end

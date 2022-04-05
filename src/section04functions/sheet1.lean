@@ -86,12 +86,19 @@ begin
   -- you can start with `rw injective_def` if you like,
   -- and later you can `rw id_eval`, although remember that `rw` doesn't
   -- work under binders like `∀`, so use `intro` first.
-  sorry
+  rw injective_def,
+  intros a b h,
+  rw id_eval at h,
+  rw id_eval at h,
+  exact h,
 end
 
 example : surjective (id : X → X) :=
 begin
-  sorry
+  rw surjective_def,
+  intro y,
+  use y,
+  rw id_eval,
 end
 
 example (f : X → Y) (g : Y → Z) (hf : injective f) (hg : injective g) :
@@ -110,12 +117,21 @@ end
 example (f : X → Y) (g : Y → Z) : 
   injective (g ∘ f) → injective f :=
 begin
-  sorry
+  rw injective_def,
+  intro h,
+  intros a b h',
+  have h'' : g(f a) = g(f b),
+  exact congr_arg g h',
+  exact (h a b) h'',
 end
 
 -- This is another one
 example (f : X → Y) (g : Y → Z) : 
   surjective (g ∘ f) → surjective g :=
 begin
-  sorry
+  rw surjective_def,
+  intros h y,
+  cases (h y) with x h',
+  use f(x),
+  exact h',
 end
