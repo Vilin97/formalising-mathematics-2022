@@ -72,7 +72,18 @@ as `Zmod37 → Zmod37 → Zmod37` (indeed, that's what "right associative" means
 def add : Zmod37 → Zmod37 → Zmod37 :=
 quotient.map₂ (λ a b, a + b) begin
   -- keep intro-ing, and dsimp the lambdas away
-  sorry
+  intros a b h,
+  dsimp,
+  intros c d h',
+  cases h with z hz,
+  cases h' with z' hz',
+  use z + z',
+  have h'' : a-b+c-d = 37*(z +z'),
+  rw hz,
+  ring_nf,
+  rw hz',
+  rw ← h'',
+  ring,
 end
 
 instance : has_add Zmod37 :=
@@ -99,7 +110,8 @@ lemma add_zero (z : Zmod37) : z + 0 = z :=
 begin
   -- A question about Zmod37, a type we're in the middle of building
   -- an API for.
-  apply quotient.induction_on z, clear z,
+  apply quotient.induction_on z,
+  clear z,
   -- Still a question about Zmod37, but now all our variables
   -- are integers,
   intro a,
@@ -119,7 +131,10 @@ end
 lemma add_comm (y z : Zmod37) : y + z = z + y :=
 begin
   apply quotient.induction_on₂ y z, clear y z,
-  sorry
+  intros a b,
+  simp,
+  use 0,
+  ring,
 end
 
 -- See if you can prove the remaining axioms for an additive abelian group yourself.
@@ -129,14 +144,24 @@ instance add_comm_group : add_comm_group Zmod37 :=
   zero := 0,
   neg := has_neg.neg,
   add_assoc := begin
-    sorry
+    intros a' b' c',
+    apply quotient.induction_on₃ a' b' c',
+    intros a b c,
+    simp,
+    ring,
   end,
   zero_add := begin
-    sorry
+    intro a',
+    apply quotient.induction_on a',
+    intro a,
+    simp,
   end,
   add_zero := add_zero,
   add_left_neg := begin
-    sorry
+    intro a',
+    apply quotient.induction_on a',
+    intro a,
+    simp,
   end,
   add_comm := add_comm }
 
@@ -155,7 +180,15 @@ end
 def mul : Zmod37 → Zmod37 → Zmod37 :=
 quotient.map₂ (λ x y, x * y) begin
   -- tricky!
-  sorry,
+  intros a b h c d h',
+  dsimp,
+  cases h with z hz,
+  cases h' with z' hz',
+  use (z*c + z'*b),
+  calc a * c - b * d = (a - b)*c + b*(c - d) : by ring
+                 ... = 37*z*c + b*(c - d) : by rw hz
+                 ... = 37*z*c + b*(37*z') : by rw hz'
+                 ... = 37* (z*c + z'*b) : by ring,
 end
 
 instance : has_mul Zmod37 :=
@@ -171,23 +204,49 @@ instance : comm_ring Zmod37 :=
   mul := (*),
   add := (+),
   mul_assoc := begin
-    sorry
+    intros a' b' c',
+    apply quotient.induction_on₃ a' b' c',
+    intros a b c,
+    simp,
+    use 0,
+    ring,
   end,
   one := 1,
   one_mul := begin
-    sorry
+    intro a',
+    apply quotient.induction_on a',
+    intro a,
+    simp,
   end,
   mul_one := begin
-    sorry
+    intro a',
+    apply quotient.induction_on a',
+    intro a,
+    simp,
   end,
   left_distrib := begin
-    sorry,
+    intros a' b' c',
+    apply quotient.induction_on₃ a' b' c',
+    intros a b c,
+    simp,
+    use 0,
+    ring,
   end,
   right_distrib := begin
-    sorry,
+    intros a' b' c',
+    apply quotient.induction_on₃ a' b' c',
+    intros a b c,
+    simp,
+    use 0,
+    ring,
   end,
   mul_comm := begin
-    sorry,
+    intros a' b',
+    apply quotient.induction_on₂ a' b',
+    intros a b,
+    simp,
+    use 0,
+    ring,
 end,
   -- the rest of the ring axioms are the axioms for an additive abelian group,
   -- and we did those already.

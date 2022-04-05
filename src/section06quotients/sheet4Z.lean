@@ -63,29 +63,38 @@ ab.1 + cd.2 = ab.2 + cd.1
 lemma R_def (ab cd : ℕ × ℕ) :
 R ab cd ↔ ab.1 + cd.2 = ab.2 + cd.1 := 
 begin
-  sorry
+  refl,
 end
 
 lemma R_def' (a b c d : ℕ) :
 R (a, b) (c, d) ↔ a + d = b + c :=
 begin
-  sorry
+  refl,
 end 
 
 
 lemma R_refl : reflexive R :=
 begin
-  sorry,
+  intro ab,
+  unfold R,
+  ring,
 end
 
 lemma R_symm : symmetric R :=
 begin
-  sorry,
+  intros ab cd h,
+  unfold R,
+  unfold R at h,
+  linarith,
 end
 
 lemma R_trans : transitive R :=
 begin
-  sorry,
+  intros a b c h1 h2,
+  unfold R at h1,
+  unfold R at h2,
+  unfold R,
+  linarith,
 end
 
 instance s : setoid (ℕ × ℕ) :=
@@ -95,7 +104,7 @@ instance s : setoid (ℕ × ℕ) :=
 @[simp] lemma equiv_def (a b c d : ℕ) :
   (a, b) ≈ (c, d) ↔ a + d = b + c :=
 begin
-  sorry
+  refl,
 end
 
 notation `myint` := quotient s
@@ -109,12 +118,15 @@ instance : has_zero myint :=
 
 @[simp] lemma zero_def : (0 : myint) = ⟦(0, 0)⟧ :=
 begin
-  sorry
+  refl,
 end
 
 def neg : myint → myint :=
 quotient.map (λ ab, (ab.2, ab.1)) begin
-  sorry,
+  rintros ⟨a,b⟩ ⟨c,d⟩ h,
+  dsimp,
+  rw equiv_def at *,
+  linarith,
 end
 
 instance : has_neg myint :=
@@ -123,12 +135,15 @@ instance : has_neg myint :=
 @[simp] lemma neg_def (a b : ℕ) : 
   -⟦(a, b)⟧ = ⟦(b, a)⟧ :=
 begin
-  sorry,
+  refl,
 end
 
 def add : myint → myint → myint :=
 quotient.map₂ (λ ab cd, (ab.1 + cd.1, ab.2 + cd.2)) begin
-  sorry,
+  rintros ⟨a,b⟩ ⟨c,d⟩ h ⟨e,f⟩ ⟨g,k⟩ h',
+  dsimp,
+  rw equiv_def at *,
+  linarith,
 end
 
 instance : has_add myint :=
@@ -137,27 +152,47 @@ instance : has_add myint :=
 @[simp] lemma add_def (a b c d : ℕ) :
   ⟦(a, b)⟧ + ⟦(c, d)⟧ = ⟦(a + c, b + d)⟧ :=
 begin
-  sorry
+  refl,
 end
 
 instance add_comm_group : add_comm_group myint :=
 { add := (+),
   add_assoc := begin
-    sorry,
+    rintros a' b' c',
+    apply quotient.induction_on₃ a' b' c',
+    rintros ⟨a,b⟩ ⟨c,d⟩ ⟨e,f⟩,
+    simp,
+    ring,
   end,
   zero := 0,
   zero_add := begin
-    sorry,
+    intros a',
+    apply quotient.induction_on a',
+    rintros ⟨a,b⟩,
+    simp,
+    ring,
   end,
   add_zero := begin
-    sorry,
+    intros a',
+    apply quotient.induction_on a',
+    rintros ⟨a,b⟩,
+    simp,
+    ring,
   end,
   neg := has_neg.neg,
   add_left_neg := begin
-    sorry,
+    intros a',
+    apply quotient.induction_on a',
+    rintros ⟨a,b⟩,
+    simp,
+    ring,
   end,
   add_comm := begin
-    sorry,
+    rintros a' b',
+    apply quotient.induction_on₂ a' b',
+    rintros ⟨a,b⟩ ⟨c,d⟩,
+    simp,
+    ring,
   end }
 
 -- our model is that the equivalence class ⟦(a, b)⟧
@@ -167,13 +202,16 @@ instance : has_one myint :=
 
 @[simp] lemma one_def : (1 : myint) = ⟦(1, 0)⟧ :=
 begin
-  sorry,
+  refl,
 end
 
 -- (a-b)*(c-d)=(ac+bd)-(ad+bc)
 def mul : myint → myint → myint :=
 quotient.map₂ (λ ab cd, (ab.1 * cd.1 + ab.2 * cd.2, ab.1 * cd.2 + ab.2 * cd.1)) begin
-  sorry,
+  rintros ⟨a,b⟩ ⟨c,d⟩ h ⟨e,f⟩ ⟨g,k⟩ h',
+  dsimp,
+  simp at *,
+  nlinarith,
 end
 
 instance : has_mul myint :=
@@ -182,7 +220,7 @@ instance : has_mul myint :=
 @[simp] lemma mul_def (a b c d : ℕ) :
   ⟦(a, b)⟧ * ⟦(c, d)⟧ = ⟦(a * c + b * d, a * d + b * c)⟧ :=
 begin
-  sorry,
+  refl,
 end
 
 instance : comm_ring myint :=
@@ -190,23 +228,47 @@ instance : comm_ring myint :=
   zero := 0,
   mul := (*),
   mul_assoc := begin
-    sorry,
+    rintros a' b' c',
+    apply quotient.induction_on₃ a' b' c',
+    rintros ⟨a,b⟩ ⟨c,d⟩ ⟨e,f⟩,
+    simp,
+    ring,
   end,
   one := 1,
   one_mul := begin
-    sorry,
+    intros a',
+    apply quotient.induction_on a',
+    rintros ⟨a,b⟩,
+    simp,
+    ring,
   end,
   mul_one := begin
-    sorry,
+    intros a',
+    apply quotient.induction_on a',
+    rintros ⟨a,b⟩,
+    simp,
+    ring,
   end,
   left_distrib := begin
-    sorry,
+    rintros a' b' c',
+    apply quotient.induction_on₃ a' b' c',
+    rintros ⟨a,b⟩ ⟨c,d⟩ ⟨e,f⟩,
+    simp,
+    ring,
   end,
   right_distrib := begin
-    sorry,
+    rintros a' b' c',
+    apply quotient.induction_on₃ a' b' c',
+    rintros ⟨a,b⟩ ⟨c,d⟩ ⟨e,f⟩,
+    simp,
+    ring,
   end,
   mul_comm := begin
-    sorry,
+    rintros a' b',
+    apply quotient.induction_on₂ a' b',
+    rintros ⟨a,b⟩ ⟨c,d⟩,
+    simp,
+    ring,
   end,
   ..myint.add_comm_group }
 

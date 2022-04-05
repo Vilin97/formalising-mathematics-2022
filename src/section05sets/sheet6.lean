@@ -50,13 +50,7 @@ end
 
 example : f '' (f ⁻¹' T) ⊆ T :=
 begin
-  intros y h,
-  unfold set.image at h,
-  cases h with x hx,
-  cases hx with h1 h2,
-  unfold set.preimage at h1,
-  rw ← h2,
-  exact h1,
+  simp,
 end
 
 lemma gal_connection : f '' S ⊆ T ↔ S ⊆ f ⁻¹' T :=

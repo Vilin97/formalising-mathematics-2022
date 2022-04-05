@@ -110,22 +110,48 @@ end
 lemma R_reflexive : reflexive R :=
 begin
   unfold reflexive, -- if you like
-  sorry
+  intro x,
+  use 0,
+  ring,
 end
 
 lemma R_symmetric : symmetric R :=
 begin
-  sorry
+  intros x y h,
+  cases h with z hz,
+  use -z,
+  calc y - x = -(x-y) : by ring
+         ... = -(37*z) : by rw hz
+         ... = 37*(-z) : by ring,
 end
+
+#check congr
+#check congr_arg
 
 lemma R_transitive : transitive R :=
 begin
-  sorry
+  unfold transitive,
+  intros x y z h1 h2,
+  cases h1 with z1 hz1,
+  cases h2 with z2 hz2,
+  use z1+z2,
+  have h' : x-y+(y-z) = 37*z1 + 37*z2,
+  exact congr (congr_arg has_add.add hz1) hz2,
+  have h'' : x-z = 37*z1 + 37*z2,
+  rw ← h',
+  ring,
+  rw h'',
+  ring,
 end
 
 lemma R_equivalence : equivalence R :=
 begin
-  sorry,
+  unfold equivalence,
+  split,
+  exact R_reflexive,
+  split,
+  exact R_symmetric,
+  exact R_transitive,
 end
 
 -- The "setoid" -- everything we've defined and proved so far,
