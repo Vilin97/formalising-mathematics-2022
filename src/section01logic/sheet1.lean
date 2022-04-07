@@ -174,5 +174,8 @@ example :
   ((((P → P) → Q) → (P → P → Q)) → R) →
   (((P → P → Q) → ((P → P) → Q)) → R) → R :=
 begin
-  sorry
+  intros f g h,
+  simp only [imp_self, forall_true_left] at g,
+  apply g,
+  exact λ (ha : Q) (hb : P), (iff_of_true ha hb).mpr,
 end

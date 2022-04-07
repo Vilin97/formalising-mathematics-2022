@@ -107,7 +107,31 @@ example (F : ι → set X) (f : X → Y) :
 begin
   -- Try a proof from first principles starting with `ext y`
   -- Also try `library_search`.
-  sorry
+  ext y,
+  split,
+  intro h,
+  cases h with x hx,
+  cases hx with h1 h2,
+  rw ← h2,
+  rw set.mem_Union,
+  rw set.mem_Union at h1,
+  cases h1 with i hi,
+  use i,
+  use x,
+  split,
+  exact hi,
+  refl,
+
+  intro h,
+  rw set.mem_Union at h,
+  cases h with i hi,
+  cases hi with x hx,
+  use x,
+  split,
+  rw set.mem_Union,
+  use i,
+  exact hx.left,
+  exact hx.right,
 end
 
 example (G : ι → set Y) (f : X → Y) :
@@ -115,14 +139,14 @@ example (G : ι → set Y) (f : X → Y) :
 begin
   -- If you tried `library_search` last time, try
   -- guessing the name of the theorem this time
-  sorry
+  exact set.preimage_Union,
 end
 
 example (G : ι → set Y) (f : X → Y) :
   f ⁻¹' (⋂ (i : ι), G i) = ⋂ (i : ι), f ⁻¹' (G i) :=
 begin
   -- If you don't want to do it, can you guess the name?
-  sorry
+  exact set.preimage_Inter,
 end
 
 -- What do you think about `set.image_Inter` by the way?
