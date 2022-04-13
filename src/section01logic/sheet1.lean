@@ -89,7 +89,8 @@ using `intro`, `exact` and `apply`.
 /-- Every proposition implies itself. -/
 example : P → P :=
 begin
-  sorry
+  intro p,
+  exact p,
 end
 
 /-
@@ -109,14 +110,14 @@ So the next level is asking you prove that `P → (Q → P)`.
 -/
 example : P → Q → P :=
 begin
-  sorry
+  finish,
 end
 
 /-- If we know `P`, and we also know `P → Q`, we can deduce `Q`. 
 This is called "Modus Ponens" by logicians. -/
 example : P → (P → Q) → Q :=
 begin
-  sorry
+  exact λ (ha : P), (imp_iff_right ha).mp,
 end
 
 /-- `→` is transitive. That is, if `P → Q` and `Q → R` are true, then
