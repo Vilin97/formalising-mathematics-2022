@@ -122,8 +122,6 @@ example : A ⊆ B → C ⊆ D → A ∩ C ⊆ B ∩ D :=
 begin
   intros hAB hCD x h,
   split,
-  cases h with h1 h2,
-  exact hAB h1,
-  cases h with h1 h2,
-  exact hCD h2,
+  exact hAB h.left,
+  exact hCD h.right,
 end
