@@ -87,6 +87,8 @@ and `Type`:
 
 -/
 
+#check mynat.rec
+
 -- induction: how to prove P(n) for all n, where P(n) is a proposition
 -- using mynat.rec directly
 example 
@@ -185,8 +187,9 @@ begin
     -- see how we have a mixture of notation now? :-(
     -- see if you can sort out the mess. In the natural number game
     -- I do this behind the scenes.
-    sorry }, -- 
-  { sorry }
+    refl, }, -- 
+  { rw add_succ,
+    rw hd, }
 end
 
 /-
@@ -222,12 +225,12 @@ def is_zero : mynat → yesno
 | 0 := yes
 | (succ n) := no
 
-lemma yes_zero_is_zero : is_zero 0 = yes :=
+@[simp] lemma yes_zero_is_zero : is_zero 0 = yes :=
 begin
   refl
 end
 
-lemma no_succ_isnt_zero (n : mynat) : is_zero (succ n) = no :=
+@[simp] lemma no_succ_isnt_zero (n : mynat) : is_zero (succ n) = no :=
 begin
   refl
 end
@@ -237,7 +240,8 @@ begin
   -- see if you can prove it.
   -- Recall the `apply_fun` tactic which can turn a hypothesis
   -- `x = y` into `f x = f y`
-  sorry
+  apply_fun is_zero,
+  simp,
 end
 
 -- Now here's how to prove that `succ` is injective
