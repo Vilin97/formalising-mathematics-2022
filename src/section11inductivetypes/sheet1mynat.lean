@@ -249,12 +249,15 @@ def pred : mynat → mynat
 
 lemma pred_succ (n : mynat) : pred (succ n) = n :=
 begin
-  sorry
+  -- refl,
+  rw pred,
 end
 
 lemma succ_inj (a b : mynat) (hab : succ a = succ b) : a = b :=
 begin
-  sorry,
+  rw ← pred_succ a,
+  rw ← pred_succ b,
+  rw hab,
 end
 
 end mynat

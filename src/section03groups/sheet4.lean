@@ -63,9 +63,13 @@ begin
   sorry
 end
 
+-- example (a b : G) : a*b = 1 ↔ a = b⁻¹ := mul_eq_one_iff_eq_inv,
+
 lemma map_inv (a : G) : f a⁻¹ = (f a)⁻¹ :=
 begin
-  sorry,
+  rw ← mul_eq_one_iff_eq_inv,
+  rw ← map_mul f,
+  simp,
 end
 
 variable (G)
@@ -80,7 +84,11 @@ variables {K : Type} [group K] {G}
 /-- `φ.comp ψ` is the composite of `φ` and `ψ`. -/
 def comp (φ : G →** H) (ψ : H →** K) : G →** K :=
 { to_fun := λ g, ψ (φ g),
-  map_mul' := begin sorry end -- fill in the proof that composite of two group homs is a group hom!
+  map_mul' := begin 
+  intros a b,
+  rw map_mul φ,
+  rw map_mul ψ,
+  end -- fill in the proof that composite of two group homs is a group hom!
 }
 
 -- The next three lemmas are pretty standard, but they are also in fact
@@ -90,7 +98,8 @@ def comp (φ : G →** H) (ψ : H →** K) : G →** K :=
 -- with the `ext` tactic.
 lemma id_comp : (id G).comp f = f :=
 begin
-  sorry
+  ext g,
+  refl,
 end
 
 lemma comp_id : f.comp (id H) = f :=

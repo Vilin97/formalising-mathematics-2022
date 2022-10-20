@@ -52,23 +52,31 @@ instance : has_add (mylist X) :=
 
 @[simp] lemma nil_add (a : mylist X) : nil + a = a :=
 begin
-  sorry
+  refl,
 end
 
 @[simp] lemma cons_add (x : X) (m l) : cons x m + l = cons x (m + l) :=
 begin
-  sorry
+  refl,
 end
 
 -- You might want to start this one with `induction a with h t IH`,
 @[simp] lemma add_nil (a : mylist X) : a + nil = a :=
 begin
-  sorry
+  induction a with h t IH,
+  refl,
+  rw cons_add,
+  rw IH,
 end
 
 lemma add_assoc (a b c : mylist X) : (a + b) + c = a + (b + c) :=
 begin
-  sorry
+  induction a with h t IH,
+  refl,
+  rw cons_add,
+  rw cons_add,
+  rw cons_add,
+  rw IH,
 end
 
 -- singleton list
@@ -76,7 +84,7 @@ def singleton (x : X) : mylist X := cons x nil
 
 @[simp] lemma singleton_def (x : X) : singleton x = cons x nil :=
 begin
-  sorry
+  refl,
 end
 
 /-- The reverse of a list. -/

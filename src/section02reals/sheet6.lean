@@ -63,7 +63,10 @@ to `t * c`. -/
 theorem tendsto_mul_const {a : ℕ → ℝ} {t : ℝ} (c : ℝ) (h : tendsto a t) :
   tendsto (λ n, a n * c) (t * c) :=
 begin
-  sorry
+  convert tendsto_const_mul c h using 1,
+  ext,
+  rw mul_comm,
+  rw mul_comm c t,
 end
 
 -- another proof of this result, showcasing some tactics
