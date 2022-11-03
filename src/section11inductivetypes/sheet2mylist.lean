@@ -69,7 +69,7 @@ begin
   rw IH,
 end
 
-lemma add_assoc (a b c : mylist X) : (a + b) + c = a + (b + c) :=
+@[simp] lemma add_assoc (a b c : mylist X) : (a + b) + c = a + (b + c) :=
 begin
   induction a with h t IH,
   refl,
@@ -98,9 +98,39 @@ def reverse : mylist X → mylist X
 -- (and consider tagging them with `@[simp]` if you want to train Lean's
 -- simplifier to do the work)
 
+@[simp] lemma add_cancellation (a b c : mylist X) : a + b = a + c ↔ b = c :=
+begin
+  split,
+  {intro h,
+  induction a with x m ha,
+  {simp at h,
+  exact h,},
+  {
+    simp at h,
+    exact ha h,
+  }},
+  intro h,
+  rw h,
+end
+
+@[simp] lemma reverse_cons (x : X) (a : mylist X) : reverse (cons x a) = (reverse a) + (singleton x) :=
+rfl
+
+@[simp] lemma reverse_nil : (reverse nil : mylist X) = nil :=
+rfl
+
+@[simp] lemma reverse_add (a b : mylist X) : reverse (a+b) = reverse b + reverse a :=
+begin
+  induction a with x m h,
+  simp,
+  simp [h],
+end
+
 theorem reverse_reverse (l : mylist X) : reverse (reverse l) = l :=
 begin
-  sorry,
+  induction l with x m hl,
+  simp,
+  simp [hl],
 end
 
 end mylist

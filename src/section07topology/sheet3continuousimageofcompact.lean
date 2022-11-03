@@ -33,5 +33,25 @@ begin
   -- Figure out the maths proof first, and then see if you can 
   -- formalise it in Lean.
   -- `rw is_compact_iff_finite_subcover at hS ⊢,` might be a good first line
-  sorry
+  rw is_compact_iff_finite_subcover at hS ⊢,
+  intros ι U Hopen Hcover,
+  have Hpreimcover : S ⊆ ⋃ (i : ι), f⁻¹' U i,
+  {
+    simp only [set.image_subset_iff, set.preimage_Union] at Hcover,
+    exact Hcover,
+  },
+  specialize hS (λ i, f⁻¹' (U i)) (λ (i:ι), (continuous.is_open_preimage hf (U i) (Hopen i))) Hpreimcover,
+  cases hS with t Hfinitecover,
+  use t,
+  simp [Hfinitecover],
 end
+#check continuous.is_open_preimage
+
+example (n k : ℕ) (hleq: n ≤ k) (hneq: n ≠ k) : (n < k) :=
+begin
+exact (ne.le_iff_lt hneq).mp hleq,
+end
+
+example (n k : ℕ) (hgeq: n ≥ k) (hneq: n ≠ k) : (n > k) :=
+(ne.symm hneq).le_iff_lt.mp hgeq
+

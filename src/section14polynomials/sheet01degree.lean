@@ -44,25 +44,34 @@ namespace polynomial
 
 variables (R : Type) [comm_ring R]
 
+example (c : R) (a : polynomial R) : (c • a).nat_degree ≤ a.nat_degree :=
+nat_degree_smul_le c a
+
 /-- `M R n` is the `R`-submodule of `R[X]` consisting of polynomials of degree ≤ `n`. -/
 noncomputable def M (n : ℕ) : submodule R (polynomial R) :=
 { carrier := {f : polynomial R | f.nat_degree ≤ n},
   zero_mem' := begin
-    sorry
+    simp only [zero_le', set.mem_set_of_eq, nat_degree_zero],
   end,
   add_mem' := begin
-    sorry,
+    intros a b ha hb,
+    rw set.mem_set_of_eq at ha hb ⊢,
+    calc (a+b).nat_degree ≤ max a.nat_degree b.nat_degree : nat_degree_add_le a b
+    ...                   ≤ n : _,
+    simp [ha, hb],
   end,
   smul_mem' := begin
-    sorry
+    intros c a h,
+    rw set.mem_set_of_eq at h ⊢,
+    linarith [nat_degree_smul_le c a, h],
   end
 }
 
 -- think about what `f ∈ M R n` means
 
-lemma mem_M_iff (f : polynomial R) (n : ℕ) : f ∈ M R n ↔ f.nat_degree ≤ n :=
+@[simp] lemma mem_M_iff (f : polynomial R) (n : ℕ) : f ∈ M R n ↔ f.nat_degree ≤ n :=
 begin
-  sorry,
+  refl,
 end
 
 /-
@@ -82,11 +91,39 @@ of degree ≤ n. The proof is not too bad once you know about
 `nat_degree_le_iff_coeff_eq_zero`. 
 
 -/
+#check nat_degree_le_iff_coeff_eq_zero
+
+example (n N : ℕ) (h : n < N) : (N = n+1) ∨ (n + 1 < N) := 
+begin
+  refine eq_or_lt_of_not_lt _,
+  linarith [h],
+end
+
+example (f : polynomial R) (n : ℕ) (hf : lcoeff R n f = 0) : f.coeff n = 0 :=
+begin
+  exact hf,
+end
+
 
 lemma ker_lcoeff (f : polynomial R) (n : ℕ) (hfn : f ∈ M R (n+1)) (hf : lcoeff R (n+1) f = 0) :
   f ∈ M R n :=
 begin
-  sorry,
+  rw mem_M_iff at hfn ⊢,
+  rw nat_degree_le_iff_coeff_eq_zero at hfn ⊢,
+  intros N h,
+  have hN : (N = n+1) ∨ (n + 1 < N),
+  {
+    apply eq_or_lt_of_not_lt _,
+    linarith [h],
+  },
+  cases hN,
+  {
+    rw hN,
+    exact hf,
+  },
+  {
+    exact hfn N hN,
+  }
 end
 
 /-
@@ -114,7 +151,21 @@ are known to the type class inference system.
 -- this should be PR'ed to mathlib
 lemma nat_degree_X_pow_le (n : ℕ) : (X^n : polynomial R).nat_degree ≤ n :=
 begin
-  sorry,
+  casesI subsingleton_or_nontrivial R,
+  rw nat_degree_of_subsingleton,
+  exact zero_le n,
+  rw @nat_degree_X_pow _ _ h n,
+end
+
+lemma nat_degree_X_pow_le' (n : ℕ) : (X^n : polynomial R).nat_degree ≤ n :=
+begin
+  rw nat_degree_le_iff_coeff_eq_zero,
+  intros N h,
+  rw coeff_X_pow,
+  simp,
+  intro hnN,
+  exfalso,
+  exact not_le_of_lt h (le_of_eq hnN),
 end
 
 end polynomial

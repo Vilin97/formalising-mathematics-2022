@@ -33,6 +33,10 @@ inductive Y : Type
 inductive Z : Type
 | d : Z
 
+inductive U : Type
+| u : U
+| a : X → U
+
 -- Define f by f(X.a)=Y.b
 def f : X → Y
 | X.a := Y.b

@@ -87,12 +87,17 @@ using `intro`, `exact` and `apply`.
 -/
 
 /-- Every proposition implies itself. -/
-example : P → P :=
+lemma reflective : P → P :=
 begin
   intro p,
   exact p,
 end
+#explode reflective
 
+#check iff.intro
+#check or.elim
+#check absurd
+#check has_lt.lt.is_trichotomous
 /-
 
 Note that `→` is not associative: in general `P → (Q → R)` and `(P → Q) → R`

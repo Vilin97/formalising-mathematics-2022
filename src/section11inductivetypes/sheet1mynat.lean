@@ -158,7 +158,7 @@ instance : has_add mynat :=
 
 lemma add_zero (n : mynat) : n + 0 = n :=
 begin
-  refl
+  refl,
 end
 
 -- dot notation for succ is quite confusing; let's switch it off
@@ -185,8 +185,9 @@ begin
     -- see how we have a mixture of notation now? :-(
     -- see if you can sort out the mess. In the natural number game
     -- I do this behind the scenes.
-    sorry }, -- 
-  { sorry }
+    refl, }, -- 
+  { rw add_succ,
+    rw hd, }
 end
 
 /-
@@ -237,7 +238,11 @@ begin
   -- see if you can prove it.
   -- Recall the `apply_fun` tactic which can turn a hypothesis
   -- `x = y` into `f x = f y`
-  sorry
+  intro h,
+  apply_fun is_zero at h,
+  rw yes_zero_is_zero at h,
+  rw no_succ_isnt_zero at h,
+  cases h,
 end
 
 -- Now here's how to prove that `succ` is injective
