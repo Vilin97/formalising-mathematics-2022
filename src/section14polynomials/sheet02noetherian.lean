@@ -84,7 +84,8 @@ of `J`. The lemma you need from the library is called `ideal.subset_span`.
 lemma gens_subset (hR : is_noetherian_ring R) (J : ideal R) :
   (hR.gens J : set R) ⊆ J :=
 begin
-  sorry
+  nth_rewrite 1 ← span_gens hR J,
+  exact ideal.subset_span,
 end
 
 end is_noetherian_ring

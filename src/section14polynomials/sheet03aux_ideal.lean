@@ -90,16 +90,43 @@ and note that `lcoeff R n f` is definitionally `f.coeff n`.
 
 -/
 
+noncomputable def poly {n : ℕ} {J : ideal (polynomial R)} {r : R} (h : r ∈ (aux_ideal J n) ) : polynomial R :=
+h.some
+
+lemma coeff_poly {n : ℕ} {J : ideal (polynomial R)} {r : R} (h : r ∈ (aux_ideal J n) ) : (poly h ∈ ((J.restrict_scalars R ⊓ M R n) : set (polynomial R))) ∧ (lcoeff R n (poly h) = r) := 
+h.some_spec
+
 lemma mono_aux (n : ℕ) :
   aux_ideal I n ≤ aux_ideal I (n + 1) :=
 begin
-  sorry,
+  intros r h,
+  have hp := coeff_poly h,
+  use ((poly h) * X),
+  split,
+  {
+    split,
+    {
+      apply I.mul_mem_right X,
+      exact hp.left.left,
+    },
+    {
+      refine le_trans (nat_degree_mul_le) _,
+      exact add_le_add hp.left.right nat_degree_X_le,
+    },
+  },
+  {
+    dsimp,
+    rw coeff_mul_X (poly h) n,
+    exact hp.right,
+  },
 end
+
+#check coeff_mul_X
 
 -- this is now a one-liner
 lemma mono : monotone (aux_ideal I) :=
 begin
-  sorry
+  exact monotone_nat_of_le_succ (mono_aux I),
 end
 
 /- Given an ideal `I` and a natural number `n`, we have been
@@ -123,7 +150,7 @@ variables {n : ℕ} {r : R} [decidable (r ∈ aux_ideal I n)]
 lemma lift_def (n : ℕ) (r : R) [decidable (r ∈ aux_ideal I n)] : 
 lift I n r = if hr : r ∈ aux_ideal I n then (submodule.mem_map.1 hr).some else 0 :=
 begin
-  sorry,
+  refl,
 end
 
 variable {I}
@@ -131,7 +158,8 @@ variable {I}
 -- you can use `dif_neg` to prove this lemma.
 lemma lift_eq_zero_of_ne (hr : ¬ r ∈ aux_ideal I n) : lift I n r = 0 :=
 begin
-  sorry,
+  apply dif_neg,
+  exact hr,
 end
 
 -- you need to do a case split for this one. The definition of `lift`
@@ -140,26 +168,35 @@ end
 lemma lift_mem :
   (lift I n r) ∈ submodule.restrict_scalars R I ⊓ M R n :=
 begin
-  sorry,
+  rw lift_def,
+  split_ifs with hr,
+  exact (submodule.mem_map.1 hr).some_spec.left,
+  exact (submodule.restrict_scalars R I ⊓ M R n).zero_mem,
 end
 
 -- this is a one-liner
 lemma lift_mem_I : lift I n r ∈ I :=
 begin
-  sorry,
+  -- rw lift_def,
+  -- split_ifs with hr,
+  -- exact (submodule.mem_map.1 hr).some_spec.left.left,
+  -- exact I.zero_mem,
+  exact lift_mem.left,
 end
 
 -- this is a one-liner too (thanks to definitional equality abuse)
 lemma lift_nat_degree_le :
   (lift I n r).nat_degree ≤ n :=
 begin
-  sorry,
+  exact lift_mem.right,
 end
 
 lemma lift_spec (hr : r ∈ aux_ideal I n) :
   lcoeff R n (lift I n r) = r :=
 begin
-  sorry,
+  rw lift_def,
+  split_ifs,
+  exact (submodule.mem_map.1 hr).some_spec.right,
 end
 
 end aux_ideal
